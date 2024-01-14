@@ -1,30 +1,37 @@
 import React from "react";
 
 const TableHead = () => {
-  const today = new Date();
-  const firstDay = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate() - today.getDay()
-  );
-  const lastDay = new Date(
-    firstDay.getFullYear(),
-    firstDay.getMonth(),
-    firstDay.getDate() + 6
-  );
+  const getStartOfWeek = () => {
+    const today = new Date();
+    const dayOfWeek = today.getDay();
+    const difference = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
 
-  const datesOfWeek = [];
-  for (let i = 1; i <= 7; i++) {
-    const date = new Date(
-      firstDay.getFullYear(),
-      firstDay.getMonth(),
-      firstDay.getDate() + i
-    );
-    const month = date.toLocaleString("default", { month: "short" }); // Get abbreviated month name
-    const day = String(date.getDate()).padStart(2, "0"); // Pad day with leading zero if needed
-    const formattedDate = `${month} ${day}`;
-    datesOfWeek.push(formattedDate);
-  }
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - difference);
+
+    return startOfWeek;
+  };
+
+  const formatMonthAndDate = (date: Date) => {
+    const month = date.toLocaleString("en-us", { month: "short" });
+    const day = date.getDate();
+    return `${month} ${day}`;
+  };
+
+  const getWeekDays = (startOfWeek: Date) => {
+    const weekDays = [];
+
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(startOfWeek);
+      day.setDate(startOfWeek.getDate() + i);
+      weekDays.push(formatMonthAndDate(day));
+    }
+
+    return weekDays;
+  };
+
+  const startOfWeek = getStartOfWeek();
+  const datesOfWeek = getWeekDays(startOfWeek);
   return (
     <thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
       <tr>

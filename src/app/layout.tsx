@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
-import "@mantine/core/styles.css";
-import "@mantine/dates/styles.css";
 
-import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,12 +14,8 @@ export default function RootLayout({
 }) {
   return (
     <html>
-      <head>
-        <ColorSchemeScript />
-      </head>
-      <body>
-        <MantineProvider>{children}</MantineProvider>
-      </body>
+      <head></head>
+      <body>{children} </body>
     </html>
   );
 }
