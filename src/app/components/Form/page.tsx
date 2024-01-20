@@ -20,6 +20,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../../components/ui/form";
+import Link from "next/link";
 
 const formSchema = z.object({
   username: z
@@ -82,7 +83,19 @@ export const FormPage = () => {
   };
 
   return (
-    <div>
+    <div className=" p-5 md:px-20 md:pb-8">
+      <div className="flex justify-between items-start py-5">
+        <h1 className="text-4xl font-light tracking-wide">
+          Create an appointment.
+        </h1>
+        <Link
+          href={"/"}
+          className="font-semibold text-gray-500 hover:text-gray-800"
+        >
+          Back to home
+        </Link>
+      </div>
+      <hr className="pb-8 border-gray-400" />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           {/* Name form input  */}
