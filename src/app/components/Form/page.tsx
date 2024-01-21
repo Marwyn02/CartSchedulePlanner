@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { Button } from "../../components/ui/button";
+import { Button, LinkButton } from "../../components/ui/button";
 import { Checkbox } from "../../components/ui/checkbox";
 import { Input } from "../../components/ui/input";
 
@@ -85,15 +85,10 @@ export const FormPage = () => {
   return (
     <div className=" p-5 md:px-20 md:pb-8">
       <div className="flex justify-between items-start py-5">
-        <h1 className="text-4xl font-light tracking-wide">
+        <h1 className="text-3xl md:text-4xl font-light tracking-wide">
           Create an appointment.
         </h1>
-        <Link
-          href={"/"}
-          className="font-semibold text-gray-500 hover:text-gray-800"
-        >
-          Back to home
-        </Link>
+        <LinkButton href={"/"} text="Back to home" />
       </div>
       <hr className="pb-8 border-gray-400" />
       <Form {...form}>
