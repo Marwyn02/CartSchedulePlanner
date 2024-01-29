@@ -1,7 +1,11 @@
+"use client";
+
 import React from "react";
 
-const UserPage = () => {
-  return <div>UserPage</div>;
-};
-
-export default UserPage;
+export default function UserPage() {
+  return (
+    <main>
+      <h1>User Appointment Page</h1>
+    </main>
+  );
+}
