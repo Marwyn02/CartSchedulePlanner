@@ -1,9 +1,26 @@
+"use client";
 import React from "react";
 
 import TableBody from "./TableBody";
 import TableHead from "./TableHead";
 
-export const TablePage = () => {
+type TScheduleProps = {
+  schedules: {
+    id: number;
+    username: string;
+    date: string;
+  }[];
+};
+
+export const TablePage = ({
+  appointments,
+}: {
+  appointments: TScheduleProps;
+}) => {
+  console.log("Hello: ", appointments);
+
+  const { schedules } = appointments;
+
   return (
     <section className="my-5 md:m-5">
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -11,6 +28,15 @@ export const TablePage = () => {
           <TableHead />
           <TableBody />
         </table>
+      </div>
+
+      <div>
+        {schedules.map((s: any, i: number) => (
+          <div key={i}>
+            <p>{s.username}</p>
+            <p>{s.date}</p>
+          </div>
+        ))}
       </div>
     </section>
   );

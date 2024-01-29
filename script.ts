@@ -9,7 +9,6 @@ async function main() {
       date: "alice@prisma.io",
     },
   });
-  console.log(appointment);
 }
 
 main()
