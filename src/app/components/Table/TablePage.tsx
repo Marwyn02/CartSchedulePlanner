@@ -17,8 +17,6 @@ export const TablePage = ({
 }: {
   appointments: TScheduleProps;
 }) => {
-  console.log("Hello: ", appointments);
-
   const { schedules } = appointments;
 
   return (
