@@ -10,6 +10,7 @@ datasource db {
 model Appointment {
   id   Int    @id @default(autoincrement())
   date String
+  place String?
   user User[] @relation("AppointmentToUser")
 }
 
