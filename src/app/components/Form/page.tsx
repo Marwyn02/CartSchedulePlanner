@@ -2,6 +2,7 @@
 
 import React from "react";
 import { date } from "@/app/api/date";
+import { place } from "@/app/api/place";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -10,6 +11,7 @@ import * as z from "zod";
 import { Button, LinkButton } from "../../components/ui/button";
 import { Checkbox } from "../../components/ui/checkbox";
 import { Input } from "../../components/ui/input";
+import { RadioGroup, RadioGroupItem } from "../../components/ui/radio-group";
 
 import createAppointment from "@/app/api/appointment/create";
 
@@ -35,52 +37,30 @@ const formSchema = z.object({
   weekDays: z.array(z.string()).refine((value) => value.some((item) => item), {
     message: "You have to select at least one.",
   }),
+  place: z.string(),
 });
 
 export const FormPage = () => {
   const weekDates = date();
-
-  const weekDays = [
-    {
-      id: "1",
-      day: weekDates[0],
-    },
-    {
-      id: "2",
-      day: weekDates[1],
-    },
-    {
-      id: "3",
-      day: weekDates[2],
-    },
-    {
-      id: "4",
-      day: weekDates[3],
-    },
-    {
-      id: "5",
-      day: weekDates[4],
-    },
-    {
-      id: "6",
-      day: weekDates[5],
-    },
-    {
-      id: "7",
-      day: weekDates[6],
-    },
-  ];
+  const places = place();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
       weekDays: [],
+      place: "",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    await createAppointment(values);
+    // console.log("Values: ", values);
+
+    try {
+      await createAppointment(values);
+    } catch (error) {
+      console.error("Failed to create your appointment: ", error);
+    }
   };
 
   return (
@@ -102,7 +82,7 @@ export const FormPage = () => {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="shadcn" {...field} />
+                  <Input placeholder="Enter your name here..." {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -115,41 +95,75 @@ export const FormPage = () => {
             render={() => (
               <FormItem>
                 <div className="mb-4">
-                  <FormLabel className="text-base">Date</FormLabel>
+                  <FormLabel>
+                    When would you like schedule your cart witnessing?
+                  </FormLabel>
                 </div>
-                {weekDays.map((days) => (
+                {weekDates.map((days, i) => (
                   <FormField
-                    key={days.id}
+                    key={i}
                     control={form.control}
                     name="weekDays"
                     render={({ field }) => {
                       return (
                         <FormItem
-                          key={days.id}
+                          key={i}
                           className="flex flex-row items-start space-x-3 space-y-0"
                         >
                           <FormControl>
                             <Checkbox
-                              checked={field.value?.includes(days.day)}
+                              checked={field.value?.includes(days)}
                               onCheckedChange={(checked: any) => {
                                 return checked
-                                  ? field.onChange([...field.value, days.day])
+                                  ? field.onChange([...field.value, days])
                                   : field.onChange(
                                       field.value?.filter(
-                                        (value: any) => value !== days.day
+                                        (value: any) => value !== days
                                       )
                                     );
                               }}
                             />
                           </FormControl>
                           <FormLabel className="text-sm font-normal">
-                            {days.day}
+                            {days}
                           </FormLabel>
                         </FormItem>
                       );
                     }}
                   />
                 ))}
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* Place picker */}
+          <FormField
+            control={form.control}
+            name="place"
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormLabel>
+                  Where you want to schedule your cart witnessing?
+                </FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="flex flex-col space-y-1"
+                  >
+                    {places.map((c) => (
+                      <FormItem
+                        key={c.id}
+                        className="flex items-center space-x-3 space-y-0"
+                      >
+                        <FormControl>
+                          <RadioGroupItem value={c.place} />
+                        </FormControl>
+                        <FormLabel className="font-normal">{c.place}</FormLabel>
+                      </FormItem>
+                    ))}
+                  </RadioGroup>
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
