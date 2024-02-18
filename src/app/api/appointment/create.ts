@@ -11,10 +11,11 @@ export default async function createAppointment(values: any) {
     if (values) {
       await prisma.user.create({
         data: {
-          name: values.username,
+          name: values.name,
           appointment: {
             create: values.weekDays.map((w: string) => ({
               date: w,
+              time: values.time,
               place: values.place,
             })),
           },
