@@ -1,4 +1,5 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+![HomePage](https://raw.githubusercontent.com/Marwyn02/CartSchedulePlanner/7272a86e4e9f486698b73b4cad49ab267c53a2cf/public/CartSchedulePlanner_Home.png)
+![FormPage](https://raw.githubusercontent.com/Marwyn02/CartSchedulePlanner/7272a86e4e9f486698b73b4cad49ab267c53a2cf/public/CartSchedulePlanner_Form.png)
 
 ## Getting Started
 
