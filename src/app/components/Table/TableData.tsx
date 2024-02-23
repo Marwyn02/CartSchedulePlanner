@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 export const TableData = ({
   schedules,
@@ -7,18 +8,41 @@ export const TableData = ({
   schedules: any;
   currentDate: string;
 }) => {
-  const filteredSchedule = schedules.filter((s: any) => s.date === currentDate);
+  const filteredSchedule = schedules.filter(
+    (s: { date: string }) => s.date === currentDate
+  );
 
-  const data = filteredSchedule.map((s: any, i: any) => (
-    <div key={i}>
-      <p>
-        {i + 1}. {s.user[0].name}
-      </p>
-    </div>
-  ));
   return (
     <td className="py-2 px-2 md:py-4 md:px-6 text-gray-800 font-medium">
-      {data}
+      {filteredSchedule.map(
+        (
+          s: {
+            id: number;
+            user: { name: string }[];
+            place: string;
+            date: string[];
+          },
+          i: number
+        ) => (
+          <div key={s.id}>
+            <Link
+              href={{
+                pathname: "/history",
+                query: {
+                  id: s.id,
+                  name: s.user[0].name,
+                  place: s.place,
+                  date: s.date,
+                },
+              }}
+            >
+              <p className="text-sm">
+                {i + 1}. {s.user[0].name}
+              </p>
+            </Link>
+          </div>
+        )
+      )}
     </td>
   );
 };
