@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 
 export default async function createAppointment(values: any) {
   try {
-    if (values) {
+    if (values.name !== "") {
       await prisma.user.create({
         data: {
           name: values.name,
