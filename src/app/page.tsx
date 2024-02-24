@@ -1,8 +1,10 @@
 import { TablePage } from "./components/Table/TablePage";
 import { LinkButton } from "./components/ui/button";
 import { ModeToggle } from "./components/darkmode-button";
+import { IconHistory } from "@tabler/icons-react";
 
 import getAppointment from "./api/appointment/get";
+import Link from "next/link";
 
 type TScheduleProps = {
   schedules: {
@@ -37,6 +39,9 @@ export default async function Home() {
             {date}
           </p>
           <ModeToggle />
+          <Link href={"/history"}>
+            <IconHistory />
+          </Link>
         </div>
       </div>
       {/* Morning Table */}
