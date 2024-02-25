@@ -19,6 +19,7 @@ export const TableData = ({
           s: {
             id: number;
             user: { name: string }[];
+            time: string;
             place: string;
             date: string[];
           },
@@ -27,16 +28,17 @@ export const TableData = ({
           <div key={s.id}>
             <Link
               href={{
-                pathname: "/history",
+                pathname: "/schedule",
                 query: {
                   id: s.id,
                   name: s.user[0].name,
+                  time: s.time,
                   place: s.place,
                   date: s.date,
                 },
               }}
             >
-              <p className="text-sm">
+              <p className="text-sm hover:text-gray-400 duration-300">
                 {i + 1}. {s.user[0].name}
               </p>
             </Link>
