@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { date } from "@/app/api/date";
 import { place } from "@/app/api/place";
 import { selectTime } from "@/app/api/time";
@@ -10,10 +11,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { Button, LinkButton } from "../../components/ui/button";
-import { Checkbox } from "../../components/ui/checkbox";
-import { Input } from "../../components/ui/input";
-import { RadioGroup, RadioGroupItem } from "../../components/ui/radio-group";
+import { Button, LinkButton } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
+import { Input } from "../ui/input";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 
 import createAppointment from "@/app/api/appointment/create";
 
@@ -27,7 +28,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../components/ui/form";
+} from "../ui/form";
 
 const formSchema = z.object({
   name: z
@@ -49,7 +50,21 @@ const formSchema = z.object({
   }),
 });
 
-export const FormPage = () => {
+export const ScheduleForm = () => {
+  /* eslint-disable react-hooks/rules-of-hooks */
+  const query = useSearchParams();
+  const [appointmentData] = useState(
+    query.get("id")
+      ? {
+          id: query.get("id"),
+          name: query.get("name"),
+          time: query.get("time"),
+          place: query.get("place"),
+          date: query.get("date"),
+        }
+      : null
+  );
+
   const weekDates = date();
   const places = place();
   const time = selectTime();
@@ -57,16 +72,14 @@ export const FormPage = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      place: "",
-      time: "",
+      name: appointmentData ? appointmentData.name ?? "" : "",
+      place: appointmentData ? appointmentData.place ?? "" : "",
+      time: appointmentData ? appointmentData.time ?? "" : "",
       weekDays: [],
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log("Values: ", values);
-
     try {
       await createAppointment(values);
     } catch (error) {
@@ -78,7 +91,7 @@ export const FormPage = () => {
     <div className=" p-5 md:px-20 md:pb-8">
       <div className="flex justify-between items-start py-5">
         <h1 className="text-3xl md:text-4xl font-light tracking-wide">
-          Create your schedule.
+          {query.get("id") ? "Update" : "Create"} your schedule.
         </h1>
         <LinkButton href={"/"} text="Back to home" />
       </div>
@@ -93,7 +106,12 @@ export const FormPage = () => {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter your name here..." {...field} />
+                  <Input
+                    placeholder={
+                      "Enter your name here..." || appointmentData?.name
+                    }
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -114,7 +132,11 @@ export const FormPage = () => {
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    defaultValue={
+                      field.value !== undefined
+                        ? field.value
+                        : appointmentData?.time ?? ""
+                    }
                     className="flex flex-col space-y-1"
                   >
                     {time.map((t) => (
@@ -146,6 +168,14 @@ export const FormPage = () => {
                       <IconCalendar />
                       When would you like schedule your cart witnessing?
                     </span>
+                    {query.get("id") && (
+                      <p className="mt-2 text-gray-300">
+                        Your last selected date is on:{" "}
+                        <span className="text-blue-400 font-semibold ml-2">
+                          {query.get("date")}
+                        </span>
+                      </p>
+                    )}
                   </FormLabel>
                 </div>
                 {weekDates.map((days, i) => (
@@ -173,7 +203,13 @@ export const FormPage = () => {
                               }}
                             />
                           </FormControl>
-                          <FormLabel className="text-sm font-normal">
+                          <FormLabel
+                            className={`text-sm font-normal ${
+                              days === query.get("date")
+                                ? "text-blue-400 font-semibold"
+                                : ""
+                            }`}
+                          >
                             {days}
                           </FormLabel>
                         </FormItem>
@@ -182,6 +218,12 @@ export const FormPage = () => {
                   />
                 ))}
                 <FormMessage />
+                {query.get("id") && (
+                  <p className="mt-3 text-gray-500">
+                    Note: You may select again your last selected date if you
+                    still wanted to schedule yourself there.
+                  </p>
+                )}
               </FormItem>
             )}
           />
@@ -200,7 +242,11 @@ export const FormPage = () => {
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    defaultValue={
+                      field.value !== undefined
+                        ? field.value
+                        : appointmentData?.place ?? ""
+                    }
                     className="flex flex-col space-y-1"
                   >
                     {places.map((c) => (
