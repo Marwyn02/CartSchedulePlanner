@@ -18,7 +18,7 @@ export const TableData = ({
         (
           s: {
             id: number;
-            user: { name: string }[];
+            user: { name: string; id: number }[];
             time: string;
             place: string;
             date: string[];
@@ -31,6 +31,7 @@ export const TableData = ({
                 pathname: "/schedule",
                 query: {
                   id: s.id,
+                  userId: s.user[0].id,
                   name: s.user[0].name,
                   time: s.time,
                   place: s.place,
