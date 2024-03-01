@@ -18,7 +18,7 @@ export const TableData = ({
         (
           s: {
             id: number;
-            user: { name: string; id: number }[];
+            user: { name: string; id: string }[];
             time: string;
             place: string;
             date: string[];
