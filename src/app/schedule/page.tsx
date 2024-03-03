@@ -1,11 +1,11 @@
 import React from "react";
-import { FormPage } from "../components/Form/page";
+import { ScheduleForm } from "../components/Form/ScheduleForm";
 
 const SchedulePage = () => {
-  async function createAppointment() {
-    "use server";
-  }
-  return <FormPage />;
+  // async function createAppointment() {
+  //   "use server";
+  // }
+  return <ScheduleForm />;
 };
 
 export default SchedulePage;
