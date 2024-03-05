@@ -11,8 +11,7 @@ type TScheduleProps = {
     id: number;
     date: string;
     place: string;
-    time: string;
-    username: string;
+    time: string | null;
   }[];
 };
 

@@ -6,13 +6,12 @@ import TableHead from "./TableHead";
 
 type TScheduleProps = {
   id: number;
-  username: string;
-  time: string;
   place: string;
   date: string;
+  time: string | null;
 }[];
 
-const TableBody = ({
+export const TableBody = ({
   schedules,
   days,
 }: {
@@ -52,5 +51,3 @@ const TableBody = ({
     </>
   );
 };
-
-export default TableBody;

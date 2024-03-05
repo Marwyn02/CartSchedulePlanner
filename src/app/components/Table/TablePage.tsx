@@ -1,16 +1,14 @@
 "use client";
 import React from "react";
 
-import TableBody from "./TableBody";
-
+import { TableBody } from "./TableBody";
 import { date } from "@/app/api/date";
 
 type TScheduleProps = {
   id: number;
-  username: string;
-  time: string;
   place: string;
   date: string;
+  time: string | null;
 }[];
 
 export const TablePage = ({
