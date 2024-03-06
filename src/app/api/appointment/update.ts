@@ -12,20 +12,16 @@ export default async function updateAppointment(
   values: any
 ) {
   try {
-    console.log("In API, ID: ", id, " UserID: ", userId, " Values: ", values);
-
-    const updatedRow = await prisma.appointment.update({
+    await prisma.appointment.update({
       where: {
         id: id,
       },
       data: {
         time: values.time,
-        date: values.weekDays[0],
+        date: values.updateWeekDays,
         place: values.place,
       },
     });
-
-    console.log("Updated: ", updatedRow);
   } catch (error) {
     console.error("ERROR: ", error);
   }
