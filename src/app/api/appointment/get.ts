@@ -1,8 +1,9 @@
 "use server";
 
 import { PrismaClient } from "@prisma/client";
+import { withAccelerate } from "@prisma/extension-accelerate";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient().$extends(withAccelerate());
 
 type TAppointmentProps = {
   id: number;
@@ -16,6 +17,7 @@ export default async function getAppointment() {
     include: {
       user: true,
     },
+    cacheStrategy: { swr: 60, ttl: 60 },
   });
 
   return {
