@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { date } from "@/app/api/date";
 import { place } from "@/app/api/place";
@@ -17,6 +16,7 @@ import { Input } from "../ui/input";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 
 import createAppointment from "@/app/api/appointment/create";
+import updateAppointment from "@/app/api/appointment/update";
 import deleteAppointment from "@/app/api/appointment/delete";
 
 import { IconSunMoon, IconCalendar, IconTrees } from "@tabler/icons-react";
@@ -46,6 +46,12 @@ const formSchema = z.object({
   weekDays: z.array(z.string()).refine((value) => value.some((item) => item), {
     message: "You have to select at least one.",
   }),
+  updateWeekDays: z
+    .string()
+    .nullable()
+    .refine((value) => value !== "", {
+      message: "Please select a date.",
+    }),
   place: z.string().refine((value) => value !== "", {
     message: "Please select a place.",
   }),
@@ -77,15 +83,21 @@ export const ScheduleForm = () => {
       name: appointmentData ? appointmentData.name ?? "" : "",
       place: appointmentData ? appointmentData.place ?? "" : "",
       time: appointmentData ? appointmentData.time ?? "" : "",
-      weekDays: [],
+      updateWeekDays: appointmentData ? appointmentData.date ?? "" : null,
+      weekDays: appointmentData ? [appointmentData?.date ?? ""] : [],
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    const id = query.get("id");
+    const userId = query.get("userId");
 
     try {
-      await createAppointment(values);
+      if (id && userId) {
+        await updateAppointment(parseInt(id, 10), parseInt(userId, 10), values);
+      } else {
+        await createAppointment(values);
+      }
     } catch (error) {
       console.error("Failed to create your appointment: ", error);
     }
@@ -128,6 +140,7 @@ export const ScheduleForm = () => {
                       placeholder={
                         "Enter your name here..." || appointmentData?.name
                       }
+                      disabled={query.get("id") ? true : false}
                       {...field}
                     />
                   </FormControl>
@@ -177,76 +190,95 @@ export const ScheduleForm = () => {
               )}
             />
             {/* Date form picker  */}
-            <FormField
-              control={form.control}
-              name="weekDays"
-              render={() => (
-                <FormItem>
-                  <div className="mb-4">
+            {!query.get("id") ? (
+              <FormField
+                control={form.control}
+                name="weekDays"
+                render={() => (
+                  <FormItem>
+                    <div className="mb-4">
+                      <FormLabel>
+                        <span className="flex items-center gap-x-1">
+                          <IconCalendar />
+                          When would you like schedule your cart witnessing?
+                        </span>
+                      </FormLabel>
+                    </div>
+                    {weekDates.map((days, i) => (
+                      <FormField
+                        key={i}
+                        control={form.control}
+                        name="weekDays"
+                        render={({ field }) => {
+                          return (
+                            <FormItem
+                              key={i}
+                              className="flex flex-row items-start space-x-3 space-y-0"
+                            >
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value?.includes(days)}
+                                  onCheckedChange={(checked: any) => {
+                                    return checked
+                                      ? field.onChange([...field.value, days])
+                                      : field.onChange(
+                                          field.value?.filter(
+                                            (value: any) => value !== days
+                                          )
+                                        );
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel className="text-sm font-normal">
+                                {days}
+                              </FormLabel>
+                            </FormItem>
+                          );
+                        }}
+                      />
+                    ))}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ) : (
+              <FormField
+                control={form.control}
+                name="updateWeekDays"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
                     <FormLabel>
                       <span className="flex items-center gap-x-1">
                         <IconCalendar />
                         When would you like schedule your cart witnessing?
                       </span>
-                      {query.get("id") && (
-                        <p className="mt-2 text-gray-500 text-sm font-semibold">
-                          Your last selected date is on:{" "}
-                          <span className="text-blue-400 font-semibold ml-2">
-                            {query.get("date")}
-                          </span>
-                        </p>
-                      )}
                     </FormLabel>
-                  </div>
-                  {weekDates.map((days, i) => (
-                    <FormField
-                      key={i}
-                      control={form.control}
-                      name="weekDays"
-                      render={({ field }) => {
-                        return (
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value || undefined}
+                        className="flex flex-col space-y-1"
+                      >
+                        {weekDates.map((days, i) => (
                           <FormItem
                             key={i}
-                            className="flex flex-row items-start space-x-3 space-y-0"
+                            className="flex items-center space-x-3 space-y-0"
                           >
                             <FormControl>
-                              <Checkbox
-                                checked={field.value?.includes(days)}
-                                onCheckedChange={(checked: any) => {
-                                  return checked
-                                    ? field.onChange([...field.value, days])
-                                    : field.onChange(
-                                        field.value?.filter(
-                                          (value: any) => value !== days
-                                        )
-                                      );
-                                }}
-                              />
+                              <RadioGroupItem value={days} />
                             </FormControl>
-                            <FormLabel
-                              className={`text-sm font-normal ${
-                                days === query.get("date")
-                                  ? "text-blue-400 font-semibold"
-                                  : ""
-                              }`}
-                            >
+                            <FormLabel className="font-normal">
                               {days}
                             </FormLabel>
                           </FormItem>
-                        );
-                      }}
-                    />
-                  ))}
-                  <FormMessage />
-                  {query.get("id") && (
-                    <p className="mt-3 text-gray-500 font-medium text-sm">
-                      Note: You may select again your last selected date if you
-                      still wanted to schedule yourself there.
-                    </p>
-                  )}
-                </FormItem>
-              )}
-            />
+                        ))}
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             {/* Place picker */}
             <FormField
               control={form.control}
@@ -262,11 +294,7 @@ export const ScheduleForm = () => {
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
-                      defaultValue={
-                        field.value !== undefined
-                          ? field.value
-                          : appointmentData?.place ?? ""
-                      }
+                      defaultValue={field.value}
                       className="flex flex-col space-y-1"
                     >
                       {places.map((c) => (
