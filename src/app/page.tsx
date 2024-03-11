@@ -26,14 +26,12 @@ export default async function Home() {
   );
 
   const date = new Date().toDateString();
-  const time = new Date().toLocaleTimeString();
 
   return (
     <main className="py-5">
       <div className="flex justify-between items-center mx-5 gap-x-5 my-3">
         <LinkButton href={"./schedule"} text="Create a schedule" />
         <div className="flex items-center gap-x-3 font-semibold">
-          <p>{time}</p>
           <p className=" px-5 py-1.5 bg-violet-800 text-white text-sm rounded-md">
             {date}
           </p>
