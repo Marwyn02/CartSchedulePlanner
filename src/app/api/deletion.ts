@@ -14,18 +14,20 @@
 import { PrismaClient } from "@prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";
 
-import { oldDate } from "@/app/api/date";
+// import { oldDate } from "@/app/api/date";
 
 const prisma = new PrismaClient().$extends(withAccelerate());
 
 export default async function deletion() {
-  const oldWeekDays: string[] = oldDate();
+  // const oldWeekDays: string[] = oldDate();
+
+  const day = [""];
 
   try {
     // GET THE APPOINTMENT OBJECT BY ITS EXPIRED DATE
     const appointments = await prisma.appointment.findMany({
       where: {
-        date: { in: oldWeekDays },
+        date: { in: day },
       },
       include: {
         user: true,
