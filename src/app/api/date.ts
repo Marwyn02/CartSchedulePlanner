@@ -1,3 +1,7 @@
+//
+//
+//
+// WEEK DATE TODAY
 export const date = () => {
   const getStartOfWeek = () => {
     const today = new Date();
@@ -34,6 +38,13 @@ export const date = () => {
   return datesOfWeek;
 };
 
+//
+//
+//
+//
+//
+//
+// PREVIOUS WEEK DATE
 export const oldDate = () => {
   const getStartOfPreviousWeek = () => {
     const today = new Date();

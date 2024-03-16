@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Toaster } from "./components/ui/toaster";
 
 import "./globals.css";
 import { ThemeProvider } from "./components/theme-provider";
@@ -17,14 +18,17 @@ export default function RootLayout({
     <html suppressHydrationWarning lang="en">
       <head></head>
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        <main>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </main>
+        <Toaster />
       </body>
     </html>
   );

@@ -14,6 +14,7 @@ import { Button, LinkButton } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import { Input } from "../ui/input";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { toast } from "../ui/use-toast";
 
 import createAppointment from "@/app/api/appointment/create";
 import updateAppointment from "@/app/api/appointment/update";
@@ -95,8 +96,30 @@ export const ScheduleForm = () => {
     try {
       if (id && userId) {
         await updateAppointment(parseInt(id, 10), parseInt(userId, 10), values);
+
+        toast({
+          title: `Thank you, ${values.name}!`,
+          description: (
+            <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+              <p className="text-white">
+                New schedule on {values.updateWeekDays} at {values.place}.
+              </p>
+            </pre>
+          ),
+        });
       } else {
         await createAppointment(values);
+
+        toast({
+          title: `Thank you, ${values.name}!`,
+          description: (
+            <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+              <p className="text-white">
+                Schedule on {values.weekDays} at {values.place}.
+              </p>
+            </pre>
+          ),
+        });
       }
     } catch (error) {
       console.error("Failed to create your appointment: ", error);
@@ -110,6 +133,15 @@ export const ScheduleForm = () => {
     try {
       if (id && userId) {
         await deleteAppointment(parseInt(id, 10), parseInt(userId, 10));
+
+        toast({
+          title: `Thank you!`,
+          description: (
+            <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+              <p className="text-white">Your schedule has been deleted.</p>
+            </pre>
+          ),
+        });
       }
     } catch (error) {
       console.error(error);
